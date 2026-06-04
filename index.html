@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Null_X Assistant</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; }
+    #chat-button {
+      position: fixed; bottom: 20px; right: 20px;
+      width: 60px; height: 60px; background: #0066ff;
+      color: white; border-radius: 50%; font-size: 28px;
+      border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 10000;
+    }
+    #chat-window {
+      display: none; position: fixed; bottom: 90px; right: 20px;
+      width: 380px; height: 520px; background: white;
+      border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      overflow: hidden; flex-direction: column; z-index: 10001;
+    }
+    #chat-header { background: #0066ff; color: white; padding: 15px; font-weight: bold; }
+    #chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f8f9fa; }
+    .message { margin: 10px 0; padding: 12px; border-radius: 12px; max-width: 85%; }
+    .user { background: #0066ff; color: white; margin-left: auto; }
+    .ai { background: #e5e5ea; color: black; }
+    #chat-input-area { padding: 10px; border-top: 1px solid #ddd; }
+    input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; }
+  </style>
+</head>
+<body>
+
+<button id="chat-button" onclick="toggleChat()">🤖</button>
+
+<div id="chat-window">
+  <div id="chat-header">Null_X Assistant <span style="float:right;cursor:pointer" onclick="toggleChat()">✕</span></div>
+  <div id="chat-messages"></div>
+  <div id="chat-input-area">
+    <input type="text" id="user-input" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendMessage()">
+  </div>
+</div>
+
+<script>
+// === YOUR SITE KNOWLEDGE BASE ===
+const siteKnowledge = {
+  structure: `Root: index.html
+CSS: style.css
+JS: config.js, main.js
+Login: login.html, login.js, supabase.js
+Settings, profile, chat folders with their files
+Cloaks: cloaks.html, cloaks.js
+unblockers: unblockers.html, unblockers.css, Null.py, NautilusOS
+BAN: guard.css, guard.js`,
+  
+  description: `Null_X is an educational platform with games, learning tools, unblockers, cloaks, and safe browsing features.`
+};
+
+function getResponse(question) {
+  const q = question.toLowerCase();
+
+  if (q.includes("hi") || q.includes("hello")) return "Hello! I'm the Null_X Assistant. How can I help you today?";
+  if (q.includes("what is null_x") || q.includes("about")) return "Null_X is an interactive educational platform focused on games, cognitive development, and safe web tools.";
+  if (q.includes("game") || q.includes("play")) return "We have many games! Check the Games folder on the site. Popular ones include Slope, Retro Bowl, Eaglercraft, etc.";
+  if (q.includes("unblock") || q.includes("cloak")) return "We have unblockers and cloaks tools. Check the unblockers/ and Cloaks/ folders.";
+  if (q.includes("login") || q.includes("account")) return "You can use the Login system. Files are in the Login/ folder.";
+  if (q.includes("ban") || q.includes("guard")) return "Security features are handled in the BAN/ folder with guard.js and guard.css.";
+  
+  // Default smart response
+  return "I'm still learning! Try asking about games, unblockers, cloaks, login, or site structure. What would you like to know?";
+}
+
+function toggleChat() {
+  const win = document.getElementById('chat-window');
+  win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function addMessage(text, sender) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `message ${sender}`;
+  div.textContent = text;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendMessage() {
+  const input = document.getElementById('user-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  addMessage(msg, 'user');
+  input.value = '';
+
+  const loading = addMessage("Thinking...", 'ai');
+
+  // Simulate thinking time
+  await new Promise(r => setTimeout(r, 400));
+
+  loading.remove();
+  const reply = getResponse(msg);
+  addMessage(reply, 'ai');
+}
+
+// Welcome message
+window.onload = () => {
+  setTimeout(() => {
+    addMessage("Hi! I'm your personal Null_X Assistant. Ask me about the site, games, unblockers, or anything else!", 'ai');
+  }, 600);
+};
+</script>
+</body>
+</html>
